@@ -1,5 +1,5 @@
 # CO EV Model
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/bgalecki/CO-EV-Model/master)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/bgalecki/CO-EV-Model/master?filepath=CO%20EV%20Model.ipynb)
 
 Click the badge above to launch the model in an interactive virtual machine. This might take a minute to load. 
 

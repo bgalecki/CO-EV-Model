@@ -149,50 +149,54 @@ class EVLoadModel(object):
         xintersections, yintersections = intersection(linex, liney, meanx, meany)
         self.xintersections, self.yintersections = xintersections, yintersections
 
-        #demand df assemblage
-        demanddf = pd.read_csv('xcelload.csv')
-        demanddf = demanddf.loc[demanddf['respondent_id'] == 235]
-        demanddf.plan_date = pd.to_datetime(demanddf['plan_date'], infer_datetime_format = True)
-        demanddf.set_index('plan_date', inplace = True)
-        hours = ['hour'+str(num).zfill(2) for num in range(1,25)]
-        demanddf = demanddf[hours]
-        demanddf = demanddf[str(year):str(year + 1)]
-
-        def hourapplier(row):
-            year = row.name.year
-            month = row.name.month
-            day = row.name.day
-            index = [datetime.datetime(year, month, day, i) for i in range(0,24)]
-
-            values = []
-            hours = ['hour'+str(num).zfill(2) for num in range(1,25)]
-            row_t = row.transpose()
-            for hour in hours:
-                values.append(row_t.loc[hour])
-            dflocal = pd.DataFrame({'index':index,
-                               'value':values}).set_index('index')
-            demanddfsout.append(dflocal)
-
-        demanddfsout = []
-        demanddf.apply(hourapplier, axis = 1)
-        demanddfout = pd.concat(demanddfsout)
-
-        demanddfout['Year'] = [i.year for i in demanddfout.index]
-        demanddfout['Month'] = [i.month for i in demanddfout.index]
-        demanddfout['YM'] = [str(i.year) + ' ' + str(i.month) for i in demanddfout.index]
-        demanddfout['Hour'] = [i.hour for i in demanddfout.index]
-
-        hours = range(0,24)
-        ts_mean = []
-        ts_std = []
-        for hour in hours:
-            df_local = demanddfout.loc[demanddfout['Hour'] == hour]
-            ts_mean.append(df_local['value'].mean())
-            ts_std.append(df_local['value'].std())
-        avgloaddf = pd.DataFrame({'Hour':hours,
-                                  'value':ts_mean,
-                                  'std':ts_std}).set_index('Hour')
-        avgloaddf['system_load'] = avgloaddf['value'] * 1000 #kw to mw
+# =============================================================================
+#         #demand df assemblage
+#         demanddf = pd.read_csv('xcelload.csv')
+#         demanddf = demanddf.loc[demanddf['respondent_id'] == 235]
+#         demanddf.plan_date = pd.to_datetime(demanddf['plan_date'], infer_datetime_format = True)
+#         demanddf.set_index('plan_date', inplace = True)
+#         hours = ['hour'+str(num).zfill(2) for num in range(1,25)]
+#         demanddf = demanddf[hours]
+#         demanddf = demanddf[str(year):str(year + 1)]
+# 
+#         def hourapplier(row):
+#             year = row.name.year
+#             month = row.name.month
+#             day = row.name.day
+#             index = [datetime.datetime(year, month, day, i) for i in range(0,24)]
+# 
+#             values = []
+#             hours = ['hour'+str(num).zfill(2) for num in range(1,25)]
+#             row_t = row.transpose()
+#             for hour in hours:
+#                 values.append(row_t.loc[hour])
+#             dflocal = pd.DataFrame({'index':index,
+#                                'value':values}).set_index('index')
+#             demanddfsout.append(dflocal)
+# 
+#         demanddfsout = []
+#         demanddf.apply(hourapplier, axis = 1)
+#         demanddfout = pd.concat(demanddfsout)
+# 
+#         demanddfout['Year'] = [i.year for i in demanddfout.index]
+#         demanddfout['Month'] = [i.month for i in demanddfout.index]
+#         demanddfout['YM'] = [str(i.year) + ' ' + str(i.month) for i in demanddfout.index]
+#         demanddfout['Hour'] = [i.hour for i in demanddfout.index]
+# 
+#         hours = range(0,24)
+#         ts_mean = []
+#         ts_std = []
+#         for hour in hours:
+#             df_local = demanddfout.loc[demanddfout['Hour'] == hour]
+#             ts_mean.append(df_local['value'].mean())
+#             ts_std.append(df_local['value'].std())
+#         avgloaddf = pd.DataFrame({'Hour':hours,
+#                                   'value':ts_mean,
+#                                   'std':ts_std}).set_index('Hour')
+# =============================================================================
+        avgloaddf = pd.read_csv('csuload.csv')
+        avgloaddf = avgloaddf.drop(['Hour'], axis=1)
+        avgloaddf['system_load'] = avgloaddf['system_load'] * 1000 #kw to mw
         avgloadseries = avgloaddf['system_load']
         self.avgloadseries = avgloadseries
 

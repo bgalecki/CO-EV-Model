@@ -294,11 +294,11 @@ class EVLoadModel(object):
         tou2shift.name = 'home2tou'
 
         tou1totalload = tou1shift.sum()
-        tou1period = pd.concat([tou1shift.loc[21:24], tou1shift.loc[0:9]])
+        tou1period = pd.concat([tou1shift.loc[19:24], tou1shift.loc[0:15]])
         tou1period = (tou1totalload / tou1period.sum()) * tou1period
 
         tou2totalload = tou2shift.sum()
-        tou2period = pd.concat([tou2shift.loc[21:24], tou2shift.loc[0:9]])
+        tou2period = pd.concat([tou2shift.loc[19:24], tou2shift.loc[0:15]])
         tou2period = (tou2totalload / tou2period.sum()) * tou2period
 
         rangefortou = pd.Series(range(0,96,1))
